@@ -1,10 +1,13 @@
 package com.hospital.management.Hospital.management.service;
 
+import com.hospital.management.Hospital.management.entity.Attendence;
 import com.hospital.management.Hospital.management.entity.Patient;
 import com.hospital.management.Hospital.management.entity.User;
 import com.hospital.management.Hospital.management.exception.BadRequestException;
+import com.hospital.management.Hospital.management.forms.LeaveForm;
 import com.hospital.management.Hospital.management.forms.LoginForm;
 import com.hospital.management.Hospital.management.forms.UserForm;
+import com.hospital.management.Hospital.management.view.LeaveView;
 import com.hospital.management.Hospital.management.view.LoginView;
 import com.hospital.management.Hospital.management.view.UserView;
 import org.springframework.validation.Errors;
@@ -28,4 +31,18 @@ public interface UserService {
   Collection<Patient> patientList(Integer id, String localDate);
 
     Collection<User> doctorDetails(String name);
+
+    LeaveView leaveReq(LeaveForm leaveForm);
+
+  Collection<Attendence> leaveList();
+
+  LeaveView updateStatus(Integer attendenceId);
+
+  Collection<Attendence> approvedLeaves();
+
+  Collection<Attendence> leaveStatus(Integer doctorId);
+
+  LeaveView updateStatusToReject(Integer attendenceId );
+
+  User findEmail(String emailData);
 }

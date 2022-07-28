@@ -1,10 +1,13 @@
 package com.hospital.management.Hospital.management.service.impl;
 
+import com.hospital.management.Hospital.management.entity.Attendence;
 import com.hospital.management.Hospital.management.entity.Patient;
 import com.hospital.management.Hospital.management.entity.User;
 import com.hospital.management.Hospital.management.exception.BadRequestException;
+import com.hospital.management.Hospital.management.forms.LeaveForm;
 import com.hospital.management.Hospital.management.forms.LoginForm;
 import com.hospital.management.Hospital.management.forms.UserForm;
+import com.hospital.management.Hospital.management.repository.AttendenceRepository;
 import com.hospital.management.Hospital.management.repository.PatientRepository;
 import com.hospital.management.Hospital.management.repository.UserRepository;
 import com.hospital.management.Hospital.management.security.config.SecurityConfig;
@@ -12,6 +15,7 @@ import com.hospital.management.Hospital.management.security.util.InvalidTokenExc
 import com.hospital.management.Hospital.management.security.util.TokenExpiredException;
 import com.hospital.management.Hospital.management.security.util.TokenGenerator;
 import com.hospital.management.Hospital.management.service.UserService;
+import com.hospital.management.Hospital.management.view.LeaveView;
 import com.hospital.management.Hospital.management.view.LoginView;
 import com.hospital.management.Hospital.management.view.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +43,9 @@ public class UserServiceImpl implements UserService {
   private PatientRepository patientRepository;
 
   @Autowired
+  private AttendenceRepository attendenceRepository;
+
+  @Autowired
   private TokenGenerator tokenGenerator;
 
   @Autowired
@@ -47,12 +54,11 @@ public class UserServiceImpl implements UserService {
 
 
   public UserView addUser(UserForm userform) {
-// if ((userRepository.findById(SecurityUtil.getCurrentUserId()).getType()).equals("admin")) {
-    System.out.println("ADMIN");
+
+
       return new UserView(userRepository.save(new User(userform.getName(), userform.getEmail(),userform.getPhoneNumber(), passwordEncoder.encode(userform.getPassword()), userform.getType(), userform.getSpeciality(), userform.getEducation())));
     }
-//   return null;
-// }
+
 
   @Override
   public void delete(Integer userId) {
@@ -75,7 +81,7 @@ public class UserServiceImpl implements UserService {
       throw badRequestException();
     }
 
-    String id = String.format( "%010d", user.getUserId() );
+    String id = String.format( "%010d", user.getId() );
     TokenGenerator.Token accessToken = tokenGenerator.create( PURPOSE_ACCESS_TOKEN, id, securityConfig.getAccessTokenExpiry() );
     TokenGenerator.Token refreshToken = tokenGenerator.create( PURPOSE_REFRESH_TOKEN, id + user.getPassword(), securityConfig.getRefreshTokenExpiry() );
     return new LoginView( user, accessToken, refreshToken );
@@ -101,9 +107,9 @@ public class UserServiceImpl implements UserService {
 
     String password = status.data.substring( 10 );
 
-    User user = userRepository.findByUserIdAndPassword( userId, password ).orElseThrow( UserServiceImpl::badRequestException );
+    User user = userRepository.findByIdAndPassword( userId, password ).orElseThrow( UserServiceImpl::badRequestException );
 
-    String id = String.format( "%010d", user.getUserId() );
+    String id = String.format( "%010d", user.getId() );
     TokenGenerator.Token accessToken = tokenGenerator.create( PURPOSE_ACCESS_TOKEN, id, securityConfig.getAccessTokenExpiry() );
     return new LoginView(
       user,
@@ -132,11 +138,44 @@ public class UserServiceImpl implements UserService {
     System.out.println("serviceimp"+id);
     return patientRepository.findByDoctorIdByAppointmentDate(id,localDate);
   }
-
   @Override
   public Collection<User> doctorDetails(String name) {
     System.out.println(name);
     return userRepository.findByName(name);
+  }
+  @Override
+  public LeaveView leaveReq(LeaveForm leaveForm){
+  return new LeaveView(attendenceRepository.save(new Attendence(leaveForm)));
+  }
+
+  @Override
+  public Collection<Attendence> leaveList() {
+    return attendenceRepository.findByStatus();
+  }
+  @Override
+  public LeaveView updateStatus(Integer attendenceId) {
+    Attendence attendence=attendenceRepository.findByAttendenceIdAndStatus(attendenceId, Attendence.Status.PENDING.value);
+    attendence.setStatus(Attendence.Status.ABSENT.value);
+    return new LeaveView(attendenceRepository.save(attendence));
+  }
+  @Override
+  public Collection<Attendence> approvedLeaves() {
+    return attendenceRepository.findByStatus(Attendence.Status.ABSENT.value);
+  }
+  @Override
+  public Collection<Attendence> leaveStatus(Integer doctorId) {
+    return attendenceRepository.findByStatusAndDoctorId(doctorId);
+  }
+  @Override
+  public LeaveView updateStatusToReject(Integer attendenceId) {
+    Attendence attendence=attendenceRepository.findByAttendenceIdAndStatus(attendenceId, Attendence.Status.PENDING.value);
+    attendence.setStatus(Attendence.Status.REJECT.value);
+    return new LeaveView(attendenceRepository.save(attendence));
+  }
+
+  @Override
+  public User findEmail(String emailData) {
+    return userRepository.findEmailByEmail(emailData);
   }
 
   private static BadRequestException badRequestException() {

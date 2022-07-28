@@ -3,6 +3,7 @@ package com.hospital.management.Hospital.management.controller;
 import com.hospital.management.Hospital.management.entity.User;
 import com.hospital.management.Hospital.management.forms.PatientForm;
 import com.hospital.management.Hospital.management.service.PatientService;
+import com.hospital.management.Hospital.management.view.LeaveView;
 import com.hospital.management.Hospital.management.view.PatientView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +27,9 @@ public class PatientController {
      public Collection<String> listDepartment(){
         return patientService.listDepartments();
     }
-    @GetMapping("/listDoctors/{department}")
-    public  Collection<User>listDoctors(@PathVariable("department") String department){
-        return patientService.listDoctors(department);
+    @GetMapping("/listDoctors")
+    public  Collection<User>listDoctors(@RequestParam String department, @RequestParam String date){
+        return patientService.listDoctors(department,date);
     }
 
     @GetMapping("/listTime")
@@ -40,6 +41,11 @@ public class PatientController {
     public  Collection<PatientView>patientHistory(@PathVariable("userdata") String userdata)
     {
         return  patientService.patientHistory(userdata);
+    }
+    @GetMapping("/leaveDuration")
+    public LeaveView getDuration(@RequestParam String date, @RequestParam Integer id)
+    {
+        return  patientService.getDuration(date,id);
     }
 
 

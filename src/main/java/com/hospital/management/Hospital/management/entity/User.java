@@ -1,5 +1,6 @@
 package com.hospital.management.Hospital.management.entity;
 
+import com.hospital.management.Hospital.management.forms.UserForm;
 import com.hospital.management.Hospital.management.forms.validation.Password;
 
 import javax.persistence.*;
@@ -8,10 +9,9 @@ import javax.persistence.*;
 @Table(name="user")
 public class User {
   @Id
-  @Column(name = "id")
+  @Column(name ="id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int userId;
-
+  private int id;
   @Column(name = "name")
   private String name;
   @Column(name = "email")
@@ -21,7 +21,6 @@ public class User {
   @Password
   @Column(name = "password")
   private String password;
-
   @Column(name = "type")
   private String type;
   @Column(name = "department")
@@ -42,13 +41,28 @@ public class User {
     this.speciality = speciality;
     this.education = education;
   }
+  public  User(UserForm userForm)
+  {
+    this.name= userForm.getName();
+    this.email = userForm.getEmail();
+    this.phoneNumber = userForm.getPhoneNumber();
+    this.password = userForm.getPassword();
+    this.type = userForm.getType();
+    this.speciality = userForm.getSpeciality();
+    this.education = userForm.getEducation();
 
-  public int getUserId() {
-    return userId;
   }
 
-  public void setUserId(int userId) {
-    this.userId = userId;
+  public User(Integer userId) {
+    this.id =userId;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
   }
 
   public String getName() {

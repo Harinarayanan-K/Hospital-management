@@ -17,7 +17,6 @@ public class PatientView {
     private Integer doctorId;
    User user;
     public PatientView(Patient patient) {
-
         this.patientId = patient.getPatientId();
         this.patientName = patient.getPatientName();
         this.gender = patient.getGender();
@@ -27,6 +26,7 @@ public class PatientView {
         this.doctorId = patient.getDoctorId();
         this.appointmentDate = patient.getAppointmentDate();
         this.time = patient.getTime();
+
         try {
             this.doctor = patient.getUser().getName();
         } catch (NullPointerException e) {

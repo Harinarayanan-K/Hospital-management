@@ -8,7 +8,6 @@ public class UserView {
   private  String name;
   private String email;
   private String phoneNumber;
-  private String password;
   private  String type;
   private  String speciality;
   private  String education;
@@ -16,7 +15,7 @@ public class UserView {
 
 
   public UserView(User user) {
-    this.id= user.getUserId();
+    this.id= user.getId();
     this.name=user.getName();
     this.email=user.getEmail();
     this.phoneNumber=user.getPhoneNumber();
@@ -41,7 +40,7 @@ public class UserView {
     return phoneNumber;
   }
 
-  public String getPassword() {return password;}
+
 
   public String getType() {
     return type;

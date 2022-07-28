@@ -1,9 +1,12 @@
 package com.hospital.management.Hospital.management.controller;
 
+import com.hospital.management.Hospital.management.entity.Attendence;
 import com.hospital.management.Hospital.management.entity.Patient;
 import com.hospital.management.Hospital.management.entity.User;
+import com.hospital.management.Hospital.management.forms.LeaveForm;
 import com.hospital.management.Hospital.management.forms.UserForm;
 import com.hospital.management.Hospital.management.service.UserService;
+import com.hospital.management.Hospital.management.view.LeaveView;
 import com.hospital.management.Hospital.management.view.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +61,54 @@ public class Usercontroller {
   public Collection<User>doctorDetails(@PathVariable String name){
     return userService.doctorDetails(name);
   }
+
+  @PostMapping("/leaveRequest")
+  public LeaveView leaveReq(@RequestBody LeaveForm leaveForm)
+  {
+    return userService.leaveReq(leaveForm);
+  }
+
+ @GetMapping("/viewLeave")
+  public Collection<Attendence>leaveList()
+ {
+   return  userService.leaveList();
+ }
+
+ @GetMapping("/approveLeave/{attendenceId}")
+  public  LeaveView updateStatus(@PathVariable Integer attendenceId)
+ {
+   return userService.updateStatus(attendenceId);
+ }
+
+ @GetMapping("/approvedLeaves")
+  public Collection<Attendence>approvedLeaves()
+
+ {
+   return  userService.approvedLeaves();
+ }
+ @GetMapping("leaveStatus/{doctorId}")
+    public Collection<Attendence>leaveStatus(@PathVariable Integer doctorId)
+ {
+     return userService.leaveStatus(doctorId);
+ }
+
+ @GetMapping("/rejectLeave/{attendenceId}")
+    public LeaveView updateStatusToReject(@PathVariable Integer attendenceId)
+ {
+     return  userService.updateStatusToReject(attendenceId);
+ }
+
+ @GetMapping("/findEmail/{data}")
+ public User findEmail(@PathVariable String data)
+ {
+     return  userService.findEmail(data);
+ }
+
+
+
+
+
+
 }
 
 

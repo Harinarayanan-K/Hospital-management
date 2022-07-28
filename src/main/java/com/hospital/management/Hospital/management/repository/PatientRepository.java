@@ -17,7 +17,8 @@ public interface PatientRepository extends Repository<Patient,Integer> {
     Collection<String> findByAppointmentDateByDoctorId(String dates,Integer doctorId);
     @Query("select i from Patient i where i.doctorId=?1 and  i.appointmentDate=?2")
     Collection<Patient> findByDoctorIdByAppointmentDate(Integer id, String localDate);
-
     @Query("select i from Patient i left join fetch i.user  where i.email=?1 or  i.phoneNumber=?1")
     List<Patient> findByEmail(String userdata);
+
+
 }

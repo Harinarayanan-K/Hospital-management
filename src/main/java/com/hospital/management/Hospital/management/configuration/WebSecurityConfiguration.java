@@ -52,13 +52,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .securityContext().and()
                 .anonymous().and()
                 .authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                .antMatchers(OPTIONS, "/user").anonymous()
                 .antMatchers(POST, "/patient/book").anonymous()
                 .antMatchers(GET, "/patient/**").anonymous()
                 .antMatchers(OPTIONS, "/login").anonymous()
                 .antMatchers(POST, "/login").anonymous()
                 .antMatchers(PUT, "/login/").anonymous()
-                 .antMatchers(GET, "/user/list").anonymous()
                 .anyRequest().authenticated();
     }
 
